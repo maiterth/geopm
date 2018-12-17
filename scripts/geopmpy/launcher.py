@@ -70,14 +70,15 @@ def factory(argv, num_rank=None, num_node=None, cpu_per_rank=None, timeout=None,
     factory_dict['aprun'] = AprunLauncher
     factory_dict['AprunLauncher'] = AprunLauncher
     factory_dict['impi'] = IMPIExecLauncher
+    factory_dict['mpiexec.hydra'] = IMPIExecLauncher
     factory_dict['IMPIExecLauncher'] = IMPIExecLauncher
     factory_dict['SrunTOSSLauncher'] = SrunTOSSLauncher
     try:
         return factory_dict[argv[1]](argv[2:], num_rank, num_node, cpu_per_rank, timeout,
                                 time_limit, job_name, node_list, host_file)
-    except KeyError:
+    except KeyError as err:
+        traceback.print_exc(err)
         raise LookupError('Unsupported launcher ' + launcher + ' requested')
-
 
 class PassThroughError(Exception):
     """
@@ -978,7 +979,7 @@ class SrunTOSSLauncher(SrunLauncher):
 class IMPIExecLauncher(Launcher):
     """
     Launcher derived object for use with the Intel(R) MPI Library job launch
-    application mpiexec.
+    application mpiexec.hydra.
     """
     def __init__(self, argv, num_rank=None, num_node=None, cpu_per_rank=None, timeout=None,
                  time_limit=None, job_name=None, node_list=None, host_file=None):
@@ -1000,9 +1001,9 @@ class IMPIExecLauncher(Launcher):
 
     def launcher_command(self):
         """
-        Returns 'mpiexec', the name of the Intel MPI Library job launch application.
+        Returns 'mpiexec.hydra', the name of the Intel MPI Library job launch application.
         """
-        return 'mpiexec'
+        return 'mpiexec.hydra'
 
     def parse_launcher_argv(self):
         """
