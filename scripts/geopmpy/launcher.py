@@ -79,6 +79,7 @@ def factory(argv, num_rank=None, num_node=None, cpu_per_rank=None, timeout=None,
     except KeyError:
         raise LookupError('Unsupported launcher ' + launcher + ' requested')
 
+
 class PassThroughError(Exception):
     """
     Exception raised when geopm is not to be used.
